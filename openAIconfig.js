@@ -81,7 +81,6 @@ app.post('/reset', (req, res) => {
     conversationHistory = [];
     res.send('Conversation reset');
 });
-
 // Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
