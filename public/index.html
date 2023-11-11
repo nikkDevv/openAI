@@ -7,14 +7,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">Nick Test GPT</div>
-        <div id="chat-output" class="chat-output"></div>
-        <div class="input-container">
-            <input type="text" id="user-input" placeholder="Ask a question...">
-            <button id="send-button">Send</button>
-            <button id="new-thread-button">New Thread</button>
+    <div id="chat-modal" class="chat-modal">
+        <div class="chat-container">
+            <div class="chat-header">Nick Test GPT <span id="close-modal" class="close-modal">&times;</span></div>
+            <div id="chat-output" class="chat-output"></div>
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Ask a question...">
+                <button id="send-button">Send</button>
+                <button id="new-thread-button">New Thread</button>
+            </div>
         </div>
+    </div>
+    <div class="button-container">
+        <button id="open-modal" class="open-modal"></button>
+        <div class="text-bubble">Ask me anything about Tolstoy!</div>
     </div>
     <script src="script.js"></script>
 </body>

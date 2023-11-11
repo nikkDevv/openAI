@@ -1,3 +1,11 @@
+document.getElementById('open-modal').addEventListener('click', function() {
+    document.getElementById('chat-modal').style.display = 'flex';
+});
+
+document.getElementById('close-modal').addEventListener('click', function() {
+    document.getElementById('chat-modal').style.display = 'none';
+});
+
 document.getElementById('send-button').addEventListener('click', sendQuestion);
 document.getElementById('new-thread-button').addEventListener('click', newThread);
 
