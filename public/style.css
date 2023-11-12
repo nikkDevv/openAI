@@ -10,21 +10,20 @@ body {
 }
 
 .chat-modal {
-    display: none; 
+    display: none;
     position: fixed;
-    z-index: 1; 
+    z-index: 1;
     left: 0;
     top: 0;
-    width: 100%; 
+    width: 100%;
     height: 100%;
-    overflow: auto; 
-    background-color: rgb(0,0,0); 
-    background-color: rgba(0,0,0,0.4); 
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
     padding-top: 60px;
     align-items: center;
     justify-content: center;
 }
-
 
 .chat-container {
     width: 90%;
@@ -76,12 +75,12 @@ body {
 
 .open-modal {
     background-image: url('robotlogo.png');
-    background-size: cover; 
-    background-position: center; 
-    background-repeat: no-repeat; 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     border: none;
     border-radius: 50%;
-    width: 60px; 
+    width: 60px;
     height: 60px;
     position: fixed;
     bottom: 20px;
@@ -99,7 +98,7 @@ body {
 }
 
 .chat-output {
-    height: 360px; 
+    height: 360px;
     background-color: #1e1e1e;
     overflow-y: auto;
     padding: 10px;
@@ -138,7 +137,7 @@ input[type="text"] {
     outline: none;
     color: inherit;
     background-color: #1e1e1e;
-    margin-right: 5px; 
+    margin-right: 5px;
 }
 
 button {
@@ -164,4 +163,28 @@ button:focus {
 
 #new-thread-button {
     border-left: 1px solid #333;
+}
+
+.loading-message {
+    color: #aaa;
+    text-align: center;
+    display: none;
+}
+
+.loading-message span {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.loading-message span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-message span:nth-child(3) {
+    animation-delay: 0.4s;
 }

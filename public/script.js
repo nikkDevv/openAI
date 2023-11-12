@@ -12,12 +12,12 @@ document.getElementById('new-thread-button').addEventListener('click', newThread
 function sendQuestion() {
     const userInput = document.getElementById('user-input').value;
     const chatOutput = document.getElementById('chat-output');
+    const loadingMessage = document.getElementById('loading-message');
 
-    // Add user input to chat
     if (userInput.trim() !== '') {
-        chatOutput.innerHTML += `<div>User: ${userInput}</div>`;
+        chatOutput.innerHTML += `<div class="user">${userInput}</div>`;
+        loadingMessage.style.display = 'block';
 
-        // Send data to Node.js server
         fetch('/ask', {
             method: 'POST',
             headers: {
@@ -27,25 +27,21 @@ function sendQuestion() {
         })
         .then(response => response.json())
         .then(data => {
-            // Display AI response
-            chatOutput.innerHTML += `<div>AI: ${data.answer}</div>`;
-            // Scroll to the bottom of the chat
+            loadingMessage.style.display = 'none';
+            chatOutput.innerHTML += `<div class="ai">${data.answer}</div>`;
             chatOutput.scrollTop = chatOutput.scrollHeight;
         })
         .catch((error) => {
             console.error('Error:', error);
+            loadingMessage.style.display = 'none';
         });
 
-        // Clear input field
         document.getElementById('user-input').value = '';
     }
 }
 
 function newThread() {
-    // Clear chat history in the UI
     document.getElementById('chat-output').innerHTML = '';
-
-    // Send a request to the server to reset the conversation history
     fetch('/reset', { method: 'POST' })
     .catch((error) => {
         console.error('Error resetting conversation:', error);
