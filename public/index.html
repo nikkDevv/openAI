@@ -5,24 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tolstoy GPT 4 test</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-    <div id="chat-modal" class="chat-modal">
-        <div class="chat-container">
-            <div class="chat-header">Ask me anything about Tolstoy <span id="close-modal" class="close-modal">&times;</span></div>
-            <div id="chat-output" class="chat-output"></div>
-            <div id="loading-message" class="loading-message">Toly is typing<span>.</span><span>.</span><span>.</span></div>
-            <div class="input-container">
-                <input type="text" id="user-input" placeholder="Ask a question...">
-                <button id="send-button">Send</button>
-                <button id="new-thread-button">New Thread</button>
-            </div>
+
+    <div id="page-container"> 
+
+    <aside id="sidebar">
+      <!-- Sidebar content -->
+      <div class="dropdown">
+        <button class="dropdown-btn">nicktolstoytest
+          <i class="fas fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+          <a href="#">Account 1</a>
+          <a href="#">Account 2</a>
+          <a href="#">Account 3</a>
+          <!-- More accounts if necessary -->
         </div>
+      </div>
+      
+      <!-- Sidebar items -->
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-box"></i>
+        <span>Products</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-video"></i>
+        <span>Videos</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-broadcast-tower"></i>
+        <span>Onsite</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-rocket"></i>
+        <span>Discover</span>
+        <span class="badge-new">New</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-plane-departure"></i>
+        <span>Offsite</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-comments"></i>
+        <span>Threads</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <i class="fas fa-chart-bar"></i>
+        <span>Analytics</span>
+      </a>
+    </aside>
+    
+    <div id="main-content">
+      <h1>Start with a popular template</h1>
+      <div class="cards-container">
+        <div class="card">
+          <span class="popular">Popular</span>
+          <h2>Video Stories</h2>
+          <p>on product pages</p>
+          <a href="#">Continue →</a>
+        </div>
+        
+        <div class="card">
+          <h2>Video Carousel</h2>
+          <p>on homepage</p>
+          <a href="#">Continue →</a>
+        </div>
+      </div>
+    
+      <!-- Chatbot Button -->
+      <div class="button-container">
+          <button id="open-modal" class="open-modal"></button>
+          <div class="text-bubble">Ask me anything about Tolstoy!</div>
+      </div>
     </div>
-    <div class="button-container">
-        <button id="open-modal" class="open-modal"></button>
-        <div class="text-bubble">Ask me anything about Tolstoy!</div>
+    
+    <!-- Chat Modal -->
+    <div id="chat-modal" class="chat-modal">
+      <div class="chat-container">
+        <div class="chat-header">Ask me anything about Tolstoy <span id="close-modal" class="close-modal">&times;</span></div>
+        <div id="chat-output" class="chat-output"></div>
+        <div id="loading-message" class="loading-message">Toly is typing<span>.</span><span>.</span><span>.</span></div>
+        <div class="input-container">
+          <input type="text" id="user-input" placeholder="Ask a question...">
+          <button id="send-button">Send</button>
+          <button id="new-thread-button">New Thread</button>
+        </div>
+      </div>
     </div>
+    </div>
+    
     <script src="script.js"></script>
-</body>
+    
+    </body>
+    
 </html>
