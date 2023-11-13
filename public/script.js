@@ -28,7 +28,8 @@ function sendQuestion() {
         .then(response => response.json())
         .then(data => {
             loadingMessage.style.display = 'none';
-            chatOutput.innerHTML += `<div class="ai">${data.answer}</div>`;
+            const formattedResponse = formatResponse(data.answer);
+            chatOutput.innerHTML += `<div class="ai">${formattedResponse}</div>`;
             chatOutput.scrollTop = chatOutput.scrollHeight;
         })
         .catch((error) => {
@@ -38,6 +39,36 @@ function sendQuestion() {
 
         document.getElementById('user-input').value = '';
     }
+}
+
+function formatResponse(response) {
+    // Check for numbered lists
+    if (/^\d+\./m.test(response)) {
+        // Split by lines and filter out empty lines
+        const lines = response.split('\n').filter(line => line.trim() !== '');
+        // Convert lines into list items, checking for numbered list format
+        const listItems = lines.map((line) => {
+            if (/^\d+\./.test(line.trim())) {
+                return `<li>${line.trim().substring(line.indexOf(' ') + 1)}</li>`;
+            } else {
+                return line; // Return line as-is if it doesn't match the list format
+            }
+        }).join('');
+        // Wrap in <ol> tag if any list item is detected
+        if (listItems.includes('<li>')) {
+            return `<ol>${listItems}</ol>`;
+        }
+    }
+
+    // Check for bullet points
+    if (response.includes('\n- ')) {
+        const items = response.split('\n- ').slice(1); // Split and remove the first empty element
+        const listItems = items.map(item => `<li>${item.trim()}</li>`).join('');
+        return `<ul>${listItems}</ul>`;
+    }
+    
+    // Return the response as-is if no list patterns are detected
+    return response;
 }
 
 function newThread() {
