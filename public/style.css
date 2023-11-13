@@ -167,7 +167,8 @@ button:focus {
 }
 
 .loading-message {
-    color: #aaa;
+    color: white;
+    background-color: #1e1e1e;
     text-align: center;
     display: none;
 }
