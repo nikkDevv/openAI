@@ -131,6 +131,43 @@ body {
     border-top: 1px solid #333;
 }
 
+.chat-prompts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Create two columns */
+  gap: 10px; /* Spacing between prompts */
+  padding: 20px;
+  background-color: #1e1e1e;
+}
+
+.chat-prompt {
+  background-color: #333;
+  color: white;
+  padding: 12px 20px;
+  border: 1px solid white;
+  border-radius: 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: left;
+}
+
+.chat-prompt:hover {
+  background-color: #444;
+}
+
+@media screen and (max-width: 600px) {
+  .chat-prompts {
+      grid-template-columns: 1fr; /* Stack prompts on smaller screens */
+  }
+}
+
+
+/* This will hide the chat prompts */
+.hidden {
+  display: none;
+}
+
+
 input[type="text"] {
     flex-grow: 1;
     padding: 10px;
@@ -138,7 +175,6 @@ input[type="text"] {
     outline: none;
     color: inherit;
     background-color: #1e1e1e;
-    margin-right: 5px;
 }
 
 button {

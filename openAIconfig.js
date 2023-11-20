@@ -3,6 +3,7 @@ const OpenAI = require('openai');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const session = require('express-session');
 const app = express();
 const port = 3000;
 
@@ -10,57 +11,85 @@ const openai = new OpenAI({
   apiKey: process.env.API_KEY
 });
 
-let currentThreadId = null; // Global variable to store the current thread ID
-let conversationHistory = []; // Stores the history of the conversation
 const assistantId = 'asst_pqAvzW9n3XHlsLEl9dkxrzfV';
 
-async function askGPT(question) {
+// In-memory session store
+app.use(session({
+  secret: 'secret-key',
+  resave: false,
+  saveUninitialized: true
+}));
+
+async function askGPT(session, question) {
     try {
-        conversationHistory.push({"role": "user", "content": question});
-
-             // Retrieve the Assistant
-             const myAssistant = await openai.beta.assistants.retrieve(assistantId);
-             console.log(myAssistant); // For debugging
-
-        if (!currentThreadId) {
-            // Create a new thread if there isn't an existing one
-            const thread = await openai.beta.threads.create();
-            currentThreadId = thread.id;
-        } else {
-            // Optional: Retrieve the existing thread (for verification or additional logic)
-            // const thread = await openai.beta.threads.retrieve(currentThreadId);
+        if (!session.conversationHistory) {
+            session.conversationHistory = [];
+            session.currentThreadId = null;
         }
 
-        // Add a message to the thread with the user's question
-        await openai.beta.threads.messages.create(currentThreadId, {
+        session.conversationHistory.push({"role": "user", "content": question});
+
+        if (!session.currentThreadId) {
+            const thread = await openai.beta.threads.create();
+            session.currentThreadId = thread.id;
+        }
+
+        await openai.beta.threads.messages.create(session.currentThreadId, {
             role: "user",
             content: question
         });
 
-        // Run the assistant to get a response
         const run = await openai.beta.threads.runs.create(
-            currentThreadId,
+            session.currentThreadId,
             { assistant_id:  assistantId }
         );
 
         let runStatus = await openai.beta.threads.runs.retrieve(
-            currentThreadId,
+            session.currentThreadId,
             run.id
         );
 
-        // Polling for run completion
+        let funcName = null;
+
         while (runStatus.status !== 'completed') {
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
-            runStatus = await openai.beta.threads.runs.retrieve(currentThreadId, run.id);
+            if (runStatus.status === 'requires_action') {
+                console.log("Requires Action");
+                const requiredActions = runStatus.required_action.submit_tool_outputs.tool_calls;
+                console.log(requiredActions);
+                // Handle the required actions
+                let toolsOutput = [];
+                for (const action of requiredActions) {
+                    funcName = action.function.name;
+                        if (funcName === "startTolstoyWidget") {
+                            const output = "say that the widget is opened";
+                            toolsOutput.push({
+                                tool_call_id: action.id,
+                                output: output
+                            });
+                        } else if (funcName === "openTolstoy"){
+                            const output = "this will open the tolstoy app";
+                            toolsOutput.push({
+                                tool_call_id: action.id,
+                                output: output
+                            });
+                        }
+                         else {
+                            console.log("Unknown function");
+                        }
+                    }
+                await openai.beta.threads.runs.submitToolOutputs(session.currentThreadId, run.id, {tool_outputs: toolsOutput});
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            runStatus = await openai.beta.threads.runs.retrieve(session.currentThreadId, run.id);
         }
 
-        // Retrieve the messages after the assistant run is complete
-        const messagesResponse = await openai.beta.threads.messages.list(currentThreadId);
-        
+        const messagesResponse = await openai.beta.threads.messages.list(session.currentThreadId);
         const aiMessages = messagesResponse.data.filter((msg) => msg.run_id === run.id && msg.role === "assistant");
-
-        // Assuming the last message is the assistant's response
-        return aiMessages[aiMessages.length - 1].content[0].text.value;
+        return {
+            aiResponse: aiMessages[aiMessages.length - 1].content[0].text.value,
+            funcName: funcName
+        }
     } catch (error) {
         console.error('Error in askGPT:', error.response ? error.response.data : error);
         return 'An error occurred while processing your request.';
@@ -70,28 +99,26 @@ async function askGPT(question) {
 // Express server setup
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public')); // Serve static files from 'public' folder
+app.use(express.static('public'));
 
-// Endpoint to handle chat requests
+
 app.post('/ask', async (req, res) => {
     try {
         const userQuestion = req.body.question;
-        const aiResponse = await askGPT(userQuestion);
-        res.json({ answer: aiResponse });
+        const result = await askGPT(req.session, userQuestion);
+        res.json({ answer: result.aiResponse, functionName: result.funcName });
     } catch (error) {
         console.error('Error in /ask endpoint:', error);
         res.status(500).send('Error processing your request');
     }
 });
 
-// Endpoint to reset conversation
 app.post('/reset', (req, res) => {
-    conversationHistory = [];
-    currentThreadId = null; // Reset the thread ID
+    req.session.conversationHistory = [];
+    req.session.currentThreadId = null;
     res.send('Conversation reset');
 });
 
-// Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
